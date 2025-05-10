@@ -1,4 +1,4 @@
-# ![Authmatech Logo](https://authmatech.com/logo.svg) Authmatech iOS SDK
+# ![Authmatech Logo](https://authmatech.com/wp-content/uploads/2025/05/Authmatech-logo.png) Authmatech iOS SDK
 
 > Seamless Mobile Identity Verification via Mobile Network Operator (MNO) 
 > **Version**: `1.0.0` &nbsp;&nbsp;|&nbsp;&nbsp;**Platform**: iOS 12.0+
