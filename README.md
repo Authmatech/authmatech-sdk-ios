@@ -1,6 +1,6 @@
 # ![Authmatech Logo](https://authmatech.com/logo.svg) Authmatech iOS SDK
 
-> Seamless Mobile Identity Verification via Telecom Header Enrichment  
+> Seamless Mobile Identity Verification via Mobile Network Operator (MNO) 
 > **Version**: `1.0.0` &nbsp;&nbsp;|&nbsp;&nbsp;**Platform**: iOS 12.0+
 
 ---
@@ -34,7 +34,7 @@ pod 'AuthmatechSDK', :git => 'https://github.com/authmatech/authmatech-sdk-ios.g
 
 ## ⚙️ Features
 
-- ✅ MSISDN Retrieval via telecom header enrichment
+- ✅ Authmatech Code Retrieval via Mobile Network Operater (MNO)
 - ✅ Fallback support for secure redirect chains
 - ✅ Debug logging with full request trace
 - ✅ Token-based authentication support
@@ -76,8 +76,8 @@ sdk.openWithDataCellularAndAccessToken(
   "http_status": 200,
   "response_body": {
     "errorCode": "0",
-    "authmatechCode": "c%2BExNVz5AktLCHBz7sAjlAU7AmMW5bTKxqo%2F==",
-    "MNOID": "1"
+    "authmatechCode": "c%2BEx..etc",
+    "MNOID": "0"
   },
   "debug": {
     "device_info": "iPhone/17.0",
@@ -94,7 +94,7 @@ sdk.openWithDataCellularAndAccessToken(
 #import <AuthmatechSDK/AuthmatechSDK-Swift.h>
 
 ObjcAuthmatechSDK *sdk = [[ObjcAuthmatechSDK alloc] init];
-NSURL *url = [NSURL URLWithString:@"https://api.partner.com/msisdn"];
+NSURL *url = [NSURL URLWithString:@"https://api.example.com/mno"];
 
 [sdk openWithDataCellular:url debug:YES completion:^(NSDictionary * _Nonnull result) {
     NSLog(@"%@", result);
