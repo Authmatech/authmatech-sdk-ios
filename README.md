@@ -1,5 +1,5 @@
 <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 15px;">
-  <img src="https://authmatech.com/wp-content/uploads/2025/05/Authmatech-logo.png" alt="Authmatech Logo" width="180">
+  <img src="https://authmatech.com/wp-content/uploads/2025/05/Authmatech-logo.png" alt="Authmatech Logo" width="180" align="center">
   <div>
     <h1 style="margin: 0; padding: 0;">Authmatech iOS SDK</h1>
     <p style="margin: 5px 0 0 0; font-size: 1.1em; color: #555;">

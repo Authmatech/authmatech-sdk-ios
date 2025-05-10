@@ -188,27 +188,40 @@ class CellularConnectionManager: ConnectionManager {
         }
     }
     
-    func createConnectionUpdateHandler(completion: @escaping ResultHandler, readyStateHandler: @escaping ()-> Void) -> (NWConnection.State) -> Void {
-        return { [weak self] (newState) in
-            switch (newState) {
+    func createConnectionUpdateHandler(completion: @escaping ResultHandler,
+                                       readyStateHandler: @escaping ()-> Void)
+    -> (NWConnection.State) -> Void {
+        return { [weak self] newState in
+            switch newState {
             case .setup:
                 self?.traceCollector.addDebug(log: "Connection State: Setup\n")
+                
             case .preparing:
                 self?.traceCollector.addDebug(log: "Connection State: Preparing\n")
+                
             case .ready:
                 let msg = self?.connection.debugDescription ?? "No connection details"
                 self?.traceCollector.addDebug(log: "Connection State: Ready \(msg)\n")
-                readyStateHandler() //Send and Receive
+                readyStateHandler()
+                
             case .waiting(let error):
-                self?.traceCollector.addDebug(log: "Connection State: Waiting \(error.localizedDescription) \n")
+                let desc = error.localizedDescription
+                self?.traceCollector.addDebug(log: "Connection State: Waiting \(desc)\n")
+                if desc.contains("Network is down") {
+                    completion(.err(.other("Data connectivity not available")))
+                }
+                
             case .cancelled:
                 self?.traceCollector.addDebug(log: "Connection State: Cancelled\n")
+                
             case .failed(let error):
-                self?.traceCollector.addDebug(type:.error, log:"Connection State: Failed ->\(error.localizedDescription)")
-                completion(.err(NetworkError.other("Connection State: Failed \(error.localizedDescription)")))
+                self?.traceCollector.addDebug(type: .error,
+                                              log: "Connection State: Failed -> \(error.localizedDescription)")
+                completion(.err(.other("Connection State: Failed \(error.localizedDescription)")))
+                
             @unknown default:
                 self?.traceCollector.addDebug(log: "Connection ERROR State not defined\n")
-                completion(.err(NetworkError.other("Connection State: Unknown \(newState)")))
+                completion(.err(.other("Connection State: Unknown \(newState)")))
             }
         }
     }
@@ -393,22 +406,30 @@ class CellularConnectionManager: ConnectionManager {
     }
     
     func startMonitoring() {
-        if (self.pathMonitor == nil) {
-            self.pathMonitor = NWPathMonitor()
-            self.pathMonitor?.pathUpdateHandler = { [weak self] path in
-                if path.status == .satisfied {
-                    self?.traceCollector.addDebug(log: "Path is satisfied")
-                } else {
-                    self?.traceCollector.addDebug(log: "Path is not satisfied")
-                    if (path.status == .unsatisfied) {
-                        self?.checkResponseHandler(.err(NetworkError.connectionFailed("No data connectivity")))
-                    }
+        self.pathMonitor = NWPathMonitor(requiredInterfaceType: .cellular)
+        self.pathMonitor?.pathUpdateHandler = { [weak self] path in
+            guard let self = self else { return }
+            if path.status == .satisfied {
+                self.traceCollector.addDebug(log: "Cellular data available")
+            } else {
+                // 2) immediate failure when cellular is off
+                self.traceCollector.addDebug(log: "We do not have a cellular path")
+                self.cleanUp()
+                let errorDict: [String: Any] = [
+                    "error": "sdk_no_data_connectivity",
+                    "error_description": "Data connectivity not available"
+                ]
+                DispatchQueue.main.async {
+                    self.checkResponseHandler(.err(.other("Data connectivity not available")))
+                    // or, if you want to bypass NetworkError enum entirely:
+                    // completion(errorDict)
                 }
             }
-            let queue = DispatchQueue(label: "NetworkMonitor")
-            self.pathMonitor?.start(queue: queue)
         }
+        let queue = DispatchQueue(label: "CellularMonitor")
+        self.pathMonitor?.start(queue: queue)
     }
+
     
     func stopMonitoring() {
         if (self.pathMonitor != nil) {
