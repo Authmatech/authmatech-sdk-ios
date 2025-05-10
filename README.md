@@ -1,8 +1,15 @@
-# <img src="https://authmatech.com/wp-content/uploads/2025/05/Authmatech-logo.png" alt="Authmatech Logo" width="200"> Authmatech iOS SDK
+<div style="display: flex; align-items: center; gap: 20px; margin-bottom: 15px;">
+  <img src="https://authmatech.com/wp-content/uploads/2025/05/Authmatech-logo.png" alt="Authmatech Logo" width="180">
+  <div>
+    <h1 style="margin: 0; padding: 0;">Authmatech iOS SDK</h1>
+    <p style="margin: 5px 0 0 0; font-size: 1.1em; color: #555;">
+      Seamless Mobile Identity Verification via Mobile Network Operator (MNO)
+    </p>
+  </div>
+</div>
 
-> Seamless Mobile Identity Verification via Mobile Network Operator (MNO) 
-> **Version**: `1.0.0` &nbsp;&nbsp;|&nbsp;&nbsp;**Platform**: iOS 12.0+
-
+> **Version**: `1.0.8`   |   **Platform**: iOS 12.0+  
+> **License**: MIT   |   [Documentation](https://docs.authmatech.com)
 ---
 
 ## 🔧 Installation
@@ -49,7 +56,7 @@ import AuthmatechSDK
 
 let sdk = AuthmatechSDK()
 
-let url = URL(string: "https://api.partner.com/msisdn")!
+let url = URL(string: "https://api.example.com/mno")!
 
 sdk.openWithDataCellular(url: url, debug: true) { result in
     print("Authmatech response: \(result)")
